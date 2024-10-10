@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { Text } from '@developerskyi/react-components'
+import { CsvUploader } from '../modules/csv-manipulation/components/CsvUploader/CsvUploader'
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<Text tag="h1">Analise de fatura</Text>
+		<Text tag="p">
+			Insira o arquivo de fatura para analisar.
+		</Text>
+
+		<CsvUploader client:load />
+	</main>
+</Layout>

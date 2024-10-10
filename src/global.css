@@ -1,0 +1,27 @@
+@import '@developerskyi/react-components/styles.css';
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  :root {
+    --color-primary-regular: 30 95% 46%;
+    --color-primary-foreground: 0, 10%, 93%;
+
+    --color-secondary-regular: 220 70% 20%;
+    --color-secondary-foreground: 220 100% 98%;
+    
+    --color-neutral-black: 0 0% 7.5%;
+    --color-neutral-white: 0 0% 97.6%;
+    --color-neutral-light: 0 0% 76.9%;
+    --color-neutral-lightest: 0 0% 0%;
+    --color-neutral-dark: 180 23.5% 9%;
+
+    --color-feedback-error: 4 89% 58%;
+    --color-feedback-warning: 36 100% 50%;
+    --color-feedback-success: 122 39% 54%;
+    --color-feedback-info: 207 90% 57%;
+
+    --color-complementary-highlight: 39 100% 50%;
+  }
+}
