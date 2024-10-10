@@ -1,1 +1,1 @@
-# this project aims to study astra and manipulate csv spreadsheets
+# this project aims to study astro and manipulate csv spreadsheets
