@@ -42,70 +42,61 @@ export const CsvUploader = () => {
     });
   };
 
-
-
   const filterData = (itensFilters: string) => {
-
     const listFilters: string[] = [];
-    
+
     if (!itensFilters) {
       return setRenderData(csvData);
     }
-    
+
     listFilters.push(itensFilters);
 
     if (listFilters.includes(LaunchType.DEFAULT)) {
       return setRenderData(csvData);
     }
 
-    console.log(listFilters, 'listFilters');
-
-
     const filteredData = csvData.filter((row) => {
       const filter = listFilters.some((filter) => {
-        if (filter === TypePayments.A_VISTA) {
-          return row["Tipo"]
-            .toLowerCase()
-            .split(" ")
-            .includes(TypePayments.A_VISTA);
+        if (filter === TypePayments.A_VISTA && row["Tipo"]) {
+          return row["Tipo"].toLowerCase().includes("vista");
         }
 
-        if (filter === TypePayments.PARCELADO) {
-          return row["Tipo"]
-            .toLowerCase()
-            .split(" ")
-            .includes(TypePayments.PARCELADO);
+        if (filter === TypePayments.PARCELADO && row["Tipo"]) {
+          return row["Tipo"].toLowerCase().includes("parcela");
         }
 
+        if (row["Lançamento"]) {
+          return row["Lançamento"].toLowerCase().includes(filter.toLowerCase());
+        }
 
-        return row["Lançamento"].toLowerCase().includes(filter.toLowerCase());
+        return false;
       });
 
       return filter;
     });
 
-    console.log("Filtrando dados:", filteredData);
+    const validFilteredData = filteredData.filter(Boolean);
 
-    if (filteredData.length === 0) {
-      return setRenderData(csvData);
-    }
-
-    setRenderData(filteredData);
+    setRenderData(validFilteredData.length === 0 ? csvData : validFilteredData);
   };
 
   const TotalValue = () => {
     const sum = renderData.reduce((acc, row) => {
-      if (row.Valor.includes("-")) {
+      if (!row.Valor) {
         return acc;
       }
 
-      const formatteValue = row.Valor.replace("R$", "").replace(",", ".");
+      const formatteValue = row.Valor.replace("R$", "")
+        .replace(/\s/g, "")
+        .replace(",", ".");
 
       const value = parseFloat(formatteValue);
 
-      const result = acc + value;
+      if (!isNaN(value)) {
+        return acc + value;
+      }
 
-      return result;
+      return acc;
     }, 0);
 
     const formattedResult = sum.toLocaleString("pt-BR", {
@@ -132,7 +123,7 @@ export const CsvUploader = () => {
   };
 
   return (
-    <div className="p-6 rounded shadow-md">
+    <div className="p-6 rounded shadow-md flex flex-col gap-4 bg-neutral-black text-neutral-white">
       <h2 className="text-2xl font-bold mb-4">Upload de Fatura CSV</h2>
       <input
         type="file"
@@ -208,9 +199,11 @@ export const CsvUploader = () => {
           </div>
 
           {renderData && (
-            <p className="mt-4 text-lg font-semibold">
-              Soma dos valores {TotalValue()}
-            </p>
+            <div className="flex gap-4 mt-4 justify-end">
+              <p className="mt-4 text-lg font-semibold text-feedback-warning">
+                Soma dos valores {TotalValue()}
+              </p>
+            </div>
           )}
         </div>
       )}
