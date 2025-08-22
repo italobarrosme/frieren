@@ -1,0 +1,54 @@
+name: build-and-push-ghcr
+
+on:
+  push:
+    branches: [ "main" ]     # ajuste se usar outra branch
+  workflow_dispatch:
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/frieren
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write          # necessário para publicar no GHCR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # (opcional) melhor tempo de build
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}  # token nativo do Actions
+
+      - name: Extract Docker metadata (tags & labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=dev        # tag fixa para o ambiente dev
+            type=sha,format=long      # tag imutável por commit (sha-xxxxxxxx)
+          labels: |
+            org.opencontainers.image.source=${{ github.repository }}
+
+      - name: Build and push (SSR Dockerfile)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
