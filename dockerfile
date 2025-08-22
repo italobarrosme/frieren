@@ -16,11 +16,15 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 
+# Configurações de ambiente
+ENV NODE_ENV=production
+ENV PORT=4321
+
 # Copia só o necessário do build
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
 
 # Se você tiver scripts de start configurados (ex: "start": "node ./dist/server/entry.mjs")
-EXPOSE 3000
+EXPOSE 4321
 CMD ["npm", "run", "start"]
