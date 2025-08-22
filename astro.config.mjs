@@ -9,4 +9,8 @@ export default defineConfig({
   // adapter: vercel(), // Adaptador Node.js para SSR
   adapter: node({ mode: 'standalone' }),
   integrations: [react()], // Integración de Preact
+  server: {
+    port: process.env.PORT ? parseInt(process.env.PORT) : 4321,
+    host: true,
+  },
 });
