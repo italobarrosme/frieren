@@ -39,6 +39,8 @@ jobs:
           images: ${{ env.IMAGE }}
           tags: |
             type=raw,value=dev        # tag fixa para o ambiente dev
+            type=raw,value=prd        # tag fixa para o ambiente prd
+            type=raw,value=latest     # tag fixa para o ambiente latest
             type=sha,format=long      # tag imutável por commit (sha-xxxxxxxx)
           labels: |
             org.opencontainers.image.source=${{ github.repository }}
